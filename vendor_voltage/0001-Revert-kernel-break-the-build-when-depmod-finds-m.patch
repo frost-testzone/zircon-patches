@@ -1,0 +1,34 @@
+From 1039362d66a2f7e601693f118568324446fc7c3b Mon Sep 17 00:00:00 2001
+From: Frost <frost.github@proton.me>
+Date: Sat, 26 Jul 2025 13:03:58 +0000
+Subject: [PATCH 1/1] Revert "kernel: break the build when depmod finds missing
+ symbols"
+
+This reverts commit e66cfcf80d5c790aed8de79edb41a6182bb1bd5b.
+---
+ build/tasks/kernel.mk | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/build/tasks/kernel.mk b/build/tasks/kernel.mk
+index c416c591..521b901e 100644
+--- a/build/tasks/kernel.mk
++++ b/build/tasks/kernel.mk
+@@ -420,14 +420,7 @@ define build-image-kernel-modules-lineage
+     mkdir -p $(4)/lib/modules/0.0/$(3)lib/modules$(6)
+     cp $(1) $(4)/lib/modules/0.0/$(3)lib/modules$(6)
+     if [ -n "$(8)" ]; then cp -r $(8) $(4)/lib/modules/0.0/; fi
+-    $(DEPMOD) -ae -F $(KERNEL_OUT)/System.map -b $(4) 0.0 2>$(4)/depmod_stderr
+-    cat $(4)/depmod_stderr >&2
+-    if { grep -q "needs unknown symbol" $(4)/depmod_stderr; }; then \
+-      echo "ERROR: kernel module(s) need unknown symbol(s)" >&2; \
+-      rm -f $(4)/depmod_stderr; \
+-      exit 1; \
+-    fi
+-    rm -f $(4)/depmod_stderr
++    $(DEPMOD) -b $(4) 0.0
+     sed -e 's/\(.*modules.*\):/\/\1:/g' -e 's/ \([^ ]*modules[^ ]*\)/ \/\1/g' $(4)/lib/modules/0.0/modules.dep > $(2)/lib/modules$(6)/modules.dep
+     cp $(4)/lib/modules/0.0/modules.softdep $(2)/lib/modules$(6)
+     cp $(4)/lib/modules/0.0/modules.alias $(2)/lib/modules$(6)
+-- 
+2.39.5
+
