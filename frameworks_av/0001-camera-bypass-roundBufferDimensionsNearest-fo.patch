@@ -1,0 +1,28 @@
+From 3acc605ef03c597a990ebaef02c3f534b74e9c3c Mon Sep 17 00:00:00 2001
+From: AdarshGrewal <adarshgrewal@gmail.com>
+Date: Sun, 24 Nov 2024 18:52:58 +0530
+Subject: [PATCH] camera: bypass roundBufferDimensionsNearest for Y16
+
+ * used by MiuiCamera in portrait mode on recent device eg zircon
+
+Change-Id: I78b1f044356aa61411ab7ce8a25c3c4e53c56afa
+---
+ .../camera/libcameraservice/utils/SessionConfigurationUtils.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp b/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
+index f192ca97c0..cea6c54b2d 100644
+--- a/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
++++ b/services/camera/libcameraservice/utils/SessionConfigurationUtils.cpp
+@@ -237,7 +237,7 @@ bool roundBufferDimensionNearest(int32_t width, int32_t height,
+     // those are not populated in static capabilities.
+     if (isPriviledgedClient == true &&
+             (format == HAL_PIXEL_FORMAT_YCbCr_420_888 || format == HAL_PIXEL_FORMAT_BLOB ||
+-             format == HAL_PIXEL_FORMAT_Y8)) {
++             format == HAL_PIXEL_FORMAT_Y8 || format == HAL_PIXEL_FORMAT_Y16)) {
+         ALOGI("Bypass roundBufferDimensionNearest for privilegedClient YUV streams "
+                 "width %d height %d for format %d", width, height, format);
+ 
+-- 
+2.34.1
+
